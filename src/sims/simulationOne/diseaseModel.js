@@ -19,13 +19,13 @@ and not interacting with others in each round.
 */
 
 /**
- * Authors: 
+ * Authors: Angel 
  * 
- * What we are simulating:
+ * What we are simulating: I am modeling a simulation to how know the ebola affects a communitied 
  * 
- * What elements we have to add:
+ * What elements we have to add: Incubation, infectious, recovered
  * 
- * In plain language, what our model does:
+ * In plain language, what our model does: Model a disease the Ebola.
  * 
  */
 
