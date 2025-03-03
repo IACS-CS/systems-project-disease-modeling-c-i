@@ -109,15 +109,6 @@ export const trackedStats = [
 ];
 
 // Example: Compute stats (students customize)
-export const computeStatistics = (population, round) => {
-  let infected = 0;
-  for (let p of population) {
-    if (p.infected) {
-      infected += 1; // Count the infected
-    }
-  }
-  return { round, infected };
-};
 
 
 // Example: Compute stats (students customize)
