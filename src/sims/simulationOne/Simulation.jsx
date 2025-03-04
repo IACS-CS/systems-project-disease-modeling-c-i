@@ -141,6 +141,22 @@ const Simulation = () => {
             {simulationParameters.infectionChance}%
           </label>
           <label>
+            Quarantine Chance:
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={simulationParameters.quarantineChance}
+              onChange={(e) =>
+                setSimulationParameters({
+                  ...simulationParameters,
+                  quarantineChance: parseFloat(e.target.value),
+                })
+              }/>
+            {simulationParameters.quarantineChance}%
+          </label>
+          <label>
             Population:
             <div className="vertical-stack">
               {/* Population uses a "square" size to allow a UI that makes it easy to slide
