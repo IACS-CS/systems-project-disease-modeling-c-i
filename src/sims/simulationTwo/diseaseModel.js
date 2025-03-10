@@ -25,15 +25,15 @@ import { shufflePopulation } from "../../lib/shufflePopulation";
 */
 
 /**
- * Authors: 
+ * Authors: Angel Devia 
  * 
- * What we are simulating:
+ * What we are simulating: Ebola
  * 
  * What we are attempting to model from the real world:
  * 
  * What we are leaving out of our model:
  * 
- * What elements we have to add:
+ * What elements we have to add: Incubation, infectious, recovered 
  * 
  * What parameters we will allow users to "tweak" to adjust the model:
  * 
