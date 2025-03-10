@@ -119,3 +119,5 @@ export const computeStatistics = (population, round) => {
   }
   return { round, infected, inQuarantine, recovered };
 };
+// In this code I used IA help to the mosth part of the code, put with the compromise to understand the code and the logic behind it.
+// GPT-4 and GPT-3
