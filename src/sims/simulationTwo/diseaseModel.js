@@ -29,7 +29,7 @@ import { shufflePopulation } from "../../lib/shufflePopulation";
  * 
  * What we are simulating: Ebola
  * 
- * What we are attempting to model from the real world:
+ * What we are attempting to model from the real world: 
  * 
  * What we are leaving out of our model:
  * 
@@ -46,62 +46,93 @@ import { shufflePopulation } from "../../lib/shufflePopulation";
 // will be passed to your disease model when it runs.
 
 export const defaultSimulationParameters = {
-  // Add any parameters you want here with their initial values
-  //  -- you will also have to add inputs into your jsx file if you want
-  // your user to be able to change these parameters.
+  infectionChance: 50,
+  recoveryChance: 40, // Probability of recovering per round
+  quarantineChance: 30, // Probability of being quarantined per round
+  quarantineDuration: 240, // 2 minutes ~ 240 rounds
 };
 
-/* Creates your initial population. By default, we *only* track whether people
-are infected. Any other attributes you want to track would have to be added
-as properties on your initial individual. 
-
-For example, if you want to track a disease which lasts for a certain number
-of rounds (e.g. an incubation period or an infectious period), you would need
-to add a property such as daysInfected which tracks how long they've been infected.
-
-Similarily, if you wanted to track immunity, you would need a property that shows
-whether people are susceptible or immune (i.e. succeptibility or immunity) */
 export const createPopulation = (size = 1600) => {
   const population = [];
   const sideSize = Math.sqrt(size);
   for (let i = 0; i < size; i++) {
     population.push({
       id: i,
-      x: (100 * (i % sideSize)) / sideSize, // X-coordinate within 100 units
-      y: (100 * Math.floor(i / sideSize)) / sideSize, // Y-coordinate scaled similarly
+      x: (100 * (i % sideSize)) / sideSize,
+      y: (100 * Math.floor(i / sideSize)) / sideSize,
       infected: false,
+      daysInfected: 0,
+      inQuarantine: false,
+      quarantineTime: 0,
     });
   }
-  // Infect patient zero...
   let patientZero = population[Math.floor(Math.random() * size)];
   patientZero.infected = true;
   return population;
 };
 
+const updateIndividual = (person, contact, params) => {
+  if (person.infected) {
+    person.daysInfected += 1;
+    
+    // Recovery logic
+    if (Math.random() * 100 < params.recoveryChance) {
+      person.infected = false;
+      person.daysInfected = 0;
+      person.inQuarantine = false;
+      person.quarantineTime = 0;
+    } else if (!person.inQuarantine) {
+      // Chance to be quarantined
+      if (Math.random() * 100 < params.quarantineChance) {
+        person.inQuarantine = true;
+        person.quarantineTime = params.quarantineDuration;
+      }
+    }
+  }
 
+  if (person.inQuarantine) {
+    person.quarantineTime -= 1;
+    if (person.quarantineTime <= 0) {
+      person.inQuarantine = false;
+    }
+    return; // If in quarantine, no spreading
+  }
 
-// Example: Update population (students decide what happens each turn)
+  if (contact.infected && !contact.inQuarantine) {
+    if (Math.random() * 100 < params.infectionChance) {
+      person.infected = true;
+      person.daysInfected = 1;
+    }
+  }
+};
+
 export const updatePopulation = (population, params) => {
-  // Figure out your logic here...
+  population = shufflePopulation(population);
+  for (let i = 0; i < population.length; i++) {
+    let p = population[i];
+    let contact = population[(i + 1) % population.length];
+    updateIndividual(p, contact, params);
+  }
   return population;
 };
 
-// Stats to track (students can add more)
-// Any stats you add here should be computed
-// by Compute Stats below
 export const trackedStats = [
   { label: "Total Infected", value: "infected" },
+  { label: "In Quarantine", value: "inQuarantine" },
+  { label: "Recovered", value: "recovered" },
 ];
 
-// Example: Compute stats (students customize)
 export const computeStatistics = (population, round) => {
   let infected = 0;
+  let inQuarantine = 0;
+  let recovered = 0;
   for (let p of population) {
-    if (p.infected) {
-      infected += 1; // Count the infected
-    }
+    if (p.infected) infected += 1;
+    if (p.inQuarantine) inQuarantine += 1;
+    if (!p.infected && p.daysInfected > 0) recovered += 1;
   }
-  return { round, infected };
+  return { round, infected, inQuarantine, recovered };
 };
+
 
 

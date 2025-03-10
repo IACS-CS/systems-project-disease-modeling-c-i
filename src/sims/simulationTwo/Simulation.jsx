@@ -9,6 +9,9 @@ import {
 import { renderChart } from "../../lib/renderChart";
 import { renderTable } from "../../lib/renderTable";
 
+// Default parameters -- any properties you add here
+// will be passed to your disease model when it runs.
+
 let boxSize = 500; // World box size in pixels
 let maxSize = 1000; // Max number of icons we render (we can simulate big populations, but don't render them all...)
 
@@ -102,11 +105,11 @@ const Simulation = () => {
   return (
     <div>
       <section className="top">
-        <h1>My Second Custom Simulation</h1>
+        <h1>My Custom Simulation</h1>
         <p>
-          Edit <code>simulationTwo/diseaseModel.js</code> to define how your
-          simulation works. This one should try to replicate features of a real
-          world illness and/or intervention.
+          Edit <code>simulationOne/diseaseModel.js</code> to define how your
+          simulation works. This one should try to introduce *one* complicating
+          feature to the basic model.
         </p>
 
         <p>
@@ -120,7 +123,39 @@ const Simulation = () => {
         <button onClick={resetSimulation}>Reset Simulation</button>
 
         <div>
-          {/* Add custom parameters here... */}
+          <label>
+            Infection Chance:
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={simulationParameters.infectionChance}
+              onChange={(e) =>
+                setSimulationParameters({
+                  ...simulationParameters,
+                  infectionChance: parseFloat(e.target.value),
+                })
+              }
+            />
+            {simulationParameters.infectionChance}%
+          </label>
+          <label>
+            Quarantine Chance:
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={simulationParameters.quarantineChance}
+              onChange={(e) =>
+                setSimulationParameters({
+                  ...simulationParameters,
+                  quarantineChance: parseFloat(e.target.value),
+                })
+              }/>
+            {simulationParameters.quarantineChance}%
+          </label>
           <label>
             Population:
             <div className="vertical-stack">
